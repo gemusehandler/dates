@@ -75,18 +75,21 @@ class DatesPlugin extends GenericPlugin {
 		// Loop through the decisions
 		foreach ($decisions as $decision) {
 			// If we have a review stage decision and it was a submission accepted decision, get to date for the decision
-			if ($decision->getData('stageId') == '3' && $decision->getData('decision') == '1'){
+			// Note that since version 3.4 the decision value has changed from '1' to '2' for accepted
+			if ($decision->getData('stageId') == '3' && $decision->getData('decision') == '2'){
 				$reviewdate = $decision->getData('dateDecided');
 			}
 		}
 
 		$dates = array();
+		$dateFormatShort = PKPString::convertStrftimeFormat($context->getLocalizedDateFormatShort($locale));
+
 		if ($submitdate)
-			$dates['received'] = date(Config::getVar('general', 'date_format_short'),strtotime($submitdate));
+			$dates['received'] = date($dateFormatShort,strtotime($submitdate));
 		if ($reviewdate)
-			$dates['accepted'] = date(Config::getVar('general', 'date_format_short'),strtotime($reviewdate));
+			$dates['accepted'] = date($dateFormatShort,strtotime($reviewdate));
 		if ($publishdate)
-			$dates['published'] = date(Config::getVar('general', 'date_format_short'),strtotime($publishdate));
+			$dates['published'] = date($dateFormatShort,strtotime($publishdate));
 
 		// Only show dates if there was a review
 		if ($reviewdate){
